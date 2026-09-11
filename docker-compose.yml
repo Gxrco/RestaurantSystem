@@ -1,0 +1,66 @@
+services:
+  # ─────────────────────────── Base de datos ───────────────────────────
+  db:
+    image: postgres:16-alpine
+    container_name: restaurant_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-restaurante}
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=C"
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      # El .sql se ejecuta solo la primera vez (cuando el volumen está vacío)
+      - "./SQL DB/proy2 (2).sql:/docker-entrypoint-initdb.d/01-init.sql:ro"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-restaurante}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  # ──────────────────────────── Backend API ────────────────────────────
+  server:
+    build:
+      context: ./Server
+    container_name: restaurant_server
+    restart: unless-stopped
+    environment:
+      PORT: 3002
+      HOST: 0.0.0.0
+      PGHOST: db
+      PGPORT: 5432
+      PGUSER: ${POSTGRES_USER:-postgres}
+      PGPASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      PGDATABASE: ${POSTGRES_DB:-restaurante}
+    ports:
+      - "${SERVER_PORT:-3002}:3002"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./Server:/app
+      - /app/node_modules
+
+  # ─────────────────────────── Frontend (Vite) ─────────────────────────
+  client:
+    build:
+      context: ./Client
+    container_name: restaurant_client
+    restart: unless-stopped
+    environment:
+      # URL que usa el navegador del host para hablarle al backend
+      VITE_API_URL: ${VITE_API_URL:-http://localhost:3002}
+    ports:
+      - "${CLIENT_PORT:-3000}:3000"
+    depends_on:
+      - server
+    volumes:
+      - ./Client:/app
+      - /app/node_modules
+
+volumes:
+  db_data:

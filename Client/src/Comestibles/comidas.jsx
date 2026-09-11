@@ -1,3 +1,4 @@
+import { API_URL } from '../config.js';
 import React, { useState, useEffect } from 'react';
 import './consumibles.css';
 
@@ -8,7 +9,7 @@ function Card({ meal }) {
     const id_prep = meal.id_preparacion;
 
     try {
-        const response = await fetch('http://127.0.0.1:3002/cocina/update', {
+        const response = await fetch(`${API_URL}/cocina/update`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -52,7 +53,7 @@ function comestibles_card() {
 
     useEffect(() => {
         // Define la URL de tu servidor
-        const url = 'http://127.0.0.1:3002/cocina';
+        const url = `${API_URL}/cocina`;
 
         // Realiza la solicitud fetch para obtener datos de comidas
         fetch(url)

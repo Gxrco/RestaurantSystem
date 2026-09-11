@@ -14,6 +14,12 @@ app.use(express.json());
 app.use(cors());
 
 const PORT = process.env.PORT || 3002;
+const HOST = process.env.HOST || '0.0.0.0';
+
+// Health check / raíz del API
+app.get('/', (req, res) => {
+  res.json({ status: 'ok', service: 'RestaurantSystem API', port: PORT });
+});
 
 // INGRESO DE USUARIOS
 app.post('/login', async (req, res) => {
@@ -491,6 +497,6 @@ app.post('/pago', async (req, res) => {
 });
 
 
-app.listen(PORT, '127.0.0.1', () => {
-    console.log(`Server listening at http://127.0.0.1:${PORT}`)
+app.listen(PORT, HOST, () => {
+    console.log(`Server listening at http://${HOST}:${PORT}`)
   })

@@ -1,3 +1,4 @@
+import { API_URL } from '../config.js';
 import React, { useState, useEffect } from 'react';
 import '/src/MainPage/Main.css'
 import '/src/MainPage/nav.css'
@@ -32,7 +33,7 @@ function Cuenta({idmesa, setIsClosed}){
 
     const handleSubmitComida = async () => {
         try {
-          const response = await fetch('http://127.0.0.1:3002/comida', {
+          const response = await fetch(`${API_URL}/comida`, {
             method: 'GET',
           });
     
@@ -52,7 +53,7 @@ function Cuenta({idmesa, setIsClosed}){
 
     const handleSubmitBebida = async () => {
         try {
-          const response = await fetch('http://127.0.0.1:3002/bebidas', {
+          const response = await fetch(`${API_URL}/bebidas`, {
             method: 'GET',
           });
     
@@ -72,7 +73,7 @@ function Cuenta({idmesa, setIsClosed}){
 
     const handleSubmitCuenta = async () => { 
         try {
-          const response = await fetch('http://127.0.0.1:3002/cuenta', {
+          const response = await fetch(`${API_URL}/cuenta`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
@@ -99,7 +100,7 @@ function Cuenta({idmesa, setIsClosed}){
 
     const handleSubmitAddComida = async (comidaId, pedidoId) => { 
         try {
-          const response = await fetch('http://127.0.0.1:3002/recuento/comida', {
+          const response = await fetch(`${API_URL}/recuento/comida`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
@@ -125,7 +126,7 @@ function Cuenta({idmesa, setIsClosed}){
 
     const handleSubmitAddBebida = async (bebidaId, pedidoId) => { 
         try {
-          const response = await fetch('http://127.0.0.1:3002/recuento/bebida', {
+          const response = await fetch(`${API_URL}/recuento/bebida`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
@@ -176,7 +177,7 @@ function Cuenta({idmesa, setIsClosed}){
 
     const handleSubmitUpdateCuenta = async (cuentaId) => { 
       try {
-        const response = await fetch('http://127.0.0.1:3002/cuenta/update', {
+        const response = await fetch(`${API_URL}/cuenta/update`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -282,7 +283,7 @@ function FacturaPago({setIsClosed}){
 
     const handleSubmitCuenta = async () => { 
         try {
-          const response = await fetch('http://127.0.0.1:3002/cuenta', {
+          const response = await fetch(`${API_URL}/cuenta`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
@@ -313,7 +314,7 @@ function FacturaPago({setIsClosed}){
 
     const handleSubmitPedido = async () => { 
         try {
-          const response = await fetch('http://127.0.0.1:3002/pedidos', {
+          const response = await fetch(`${API_URL}/pedidos`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
@@ -339,7 +340,7 @@ function FacturaPago({setIsClosed}){
 
       const handleSubmitCliente = async (nit1,nombre1,direccion1) => { 
         try {
-          const response = await fetch('http://127.0.0.1:3002/cliente', {
+          const response = await fetch(`${API_URL}/cliente`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
@@ -368,7 +369,7 @@ function FacturaPago({setIsClosed}){
 
       const handleSubmitFactura = async () => { 
         try {
-          const response = await fetch('http://127.0.0.1:3002/factura', {
+          const response = await fetch(`${API_URL}/factura`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
@@ -396,7 +397,7 @@ function FacturaPago({setIsClosed}){
 
       const handleSubmitPago = async (tipo, fraccion) => { 
         try {
-          const response = await fetch('http://127.0.0.1:3002/pago', {
+          const response = await fetch(`${API_URL}/pago`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
@@ -547,7 +548,7 @@ function EncuestaQuejas({setIsSelected}){
       }
       e.preventDefault();
       try {
-        const response = await fetch('http://127.0.0.1:3002/queja', {
+        const response = await fetch(`${API_URL}/queja`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -587,7 +588,7 @@ function EncuestaQuejas({setIsSelected}){
     const handleSubmit_enceusta = async (e) => {
       e.preventDefault();
       try {
-        const response = await fetch('http://127.0.0.1:3002/encuesta', {
+        const response = await fetch(`${API_URL}/encuesta`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'

@@ -1,3 +1,4 @@
+import { API_URL } from '../config.js';
 import React, { useState } from "react";
 import md5 from "md5";
 import './main.css';
@@ -28,7 +29,7 @@ const Register = ({ setLogIn, setRegister }) => {
       const encryptedPassword = md5(password);
 
       // Hacer la solicitud al backend para registrar al usuario
-      const response = await fetch('http://127.0.0.1:3002/register', {
+      const response = await fetch(`${API_URL}/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

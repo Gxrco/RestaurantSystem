@@ -1,3 +1,4 @@
+import { API_URL } from '../config.js';
 import React, { useState } from 'react';
 import '../Mesas/Box.css';
 import Top from './Filter';
@@ -14,7 +15,7 @@ function Estadisticas() {
     try {
       if (selectedOption === 'quejasPlatos') {
          // Suponiendo que `startDate` y `endDate` son las fechas seleccionadas por el usuario
-         const response = await fetch('http://127.0.0.1:3002/stats/quejas_platos', {
+         const response = await fetch(`${API_URL}/stats/quejas_platos`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -36,7 +37,7 @@ function Estadisticas() {
 
       } 
       else if (selectedOption === 'eficiencia') {
-        const response = await fetch('http://127.0.0.1:3002/stats/eficiencia_meseros1');
+        const response = await fetch(`${API_URL}/stats/eficiencia_meseros1`);
         if (response.ok) {
           const result = await response.json();
           // Actualizar el estado para mostrar los datos de eficiencia
@@ -48,7 +49,7 @@ function Estadisticas() {
       }
       else if(selectedOption === 'quejasPersona') {
         // Suponiendo que `startDate` y `endDate` son las fechas seleccionadas por el usuario
-        const response = await fetch('http://127.0.0.1:3002/stats/quejas_empleados', {
+        const response = await fetch(`${API_URL}/stats/quejas_empleados`, {
          method: 'POST',
          headers: {
            'Content-Type': 'application/json'
@@ -69,7 +70,7 @@ function Estadisticas() {
      } 
      else if(selectedOption === 'horario') {
       // Suponiendo que `startDate` y `endDate` son las fechas seleccionadas por el usuario
-      const response = await fetch('http://127.0.0.1:3002/stats/horarios_pedidos', {
+      const response = await fetch(`${API_URL}/stats/horarios_pedidos`, {
        method: 'POST',
        headers: {
          'Content-Type': 'application/json'
@@ -90,7 +91,7 @@ function Estadisticas() {
    } 
    else if(selectedOption === 'platos') {
     // Suponiendo que `startDate` y `endDate` son las fechas seleccionadas por el usuario
-    const response = await fetch('http://127.0.0.1:3002/stats/platos_mas_pedidos', {
+    const response = await fetch(`${API_URL}/stats/platos_mas_pedidos`, {
      method: 'POST',
      headers: {
        'Content-Type': 'application/json'
@@ -111,7 +112,7 @@ function Estadisticas() {
  } 
  else if(selectedOption === 'promedio') {
   // Suponiendo que `startDate` y `endDate` son las fechas seleccionadas por el usuario
-  const response = await fetch('http://127.0.0.1:3002/stats/promedio_comidas', {
+  const response = await fetch(`${API_URL}/stats/promedio_comidas`, {
    method: 'POST',
    headers: {
      'Content-Type': 'application/json'

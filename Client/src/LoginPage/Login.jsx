@@ -1,3 +1,4 @@
+import { API_URL } from '../config.js';
 import React, { useState } from "react";
 import md5 from "md5";
 import './main.css';
@@ -11,7 +12,7 @@ const Login = ({ setLogIn, setRegister }) => {
     e.preventDefault();
 
     try {
-      const response = await fetch('http://127.0.0.1:3002/login', {
+      const response = await fetch(`${API_URL}/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

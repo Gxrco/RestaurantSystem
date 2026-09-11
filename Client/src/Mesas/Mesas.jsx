@@ -1,3 +1,4 @@
+import { API_URL } from '../config.js';
 import './Box.css'
 import Areas from './Areas'
 import Mesa from './mesa'
@@ -18,7 +19,7 @@ function Mesas({ setIsSelected, mesaIdSelected, onSelectMesa }) {
 
     const handleSubmitArea = async () => {
         try {
-          const response = await fetch('http://127.0.0.1:3002/areas', {
+          const response = await fetch(`${API_URL}/areas`, {
             method: 'GET',
           });
     
@@ -38,7 +39,7 @@ function Mesas({ setIsSelected, mesaIdSelected, onSelectMesa }) {
 
     const handleSubmitMesas = async () => { 
       try {
-        const response = await fetch('http://127.0.0.1:3002/mesas', {
+        const response = await fetch(`${API_URL}/mesas`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'

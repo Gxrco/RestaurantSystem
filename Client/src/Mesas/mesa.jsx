@@ -1,3 +1,4 @@
+import { API_URL } from '../config.js';
 import "./mesa.css";
 import React, { useState } from 'react';
 
@@ -6,7 +7,7 @@ function Mesa({ num, available, setIsSelected, mesaIdSelected, setIdMesaSelected
     const handleCuenta = async () => {
         const userId = localStorage.getItem('id');
         try {
-            const response = await fetch('http://127.0.0.1:3002/pedidos/crear', {
+            const response = await fetch(`${API_URL}/pedidos/crear`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

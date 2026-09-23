@@ -1,7 +1,8 @@
 services:
   # ─────────────────────────── Base de datos ───────────────────────────
   db:
-    image: postgres:16-alpine
+    build:
+      context: "./SQL DB"
     container_name: restaurant_db
     restart: unless-stopped
     environment:
@@ -13,10 +14,8 @@ services:
       - "${DB_PORT:-5432}:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
-      # NOTA: el bind mount del .sql se quitó porque en Windows + WSL2, con el
-      # proyecto en la unidad E:, el montaje llega vacío (Docker crea un
-      # directorio en vez del archivo) y la DB nunca se inicializa.
-      # El esquema se carga tras el arranque con:  scripts/init-db (psql).
+      # El SQL se copia en la imagen desde SQL DB/Dockerfile para que una base
+      # nueva se inicialice sin depender de bind mounts del host.
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-restaurante}"]
       interval: 5s
@@ -38,6 +37,7 @@ services:
       PGUSER: ${POSTGRES_USER:-postgres}
       PGPASSWORD: ${POSTGRES_PASSWORD:-postgres}
       PGDATABASE: ${POSTGRES_DB:-restaurante}
+      CORS_ORIGINS: "${CORS_ORIGINS:-http://localhost:3000,http://127.0.0.1:3000}"
     ports:
       - "${SERVER_PORT:-3002}:3002"
     depends_on:

@@ -9,6 +9,17 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 
+const DEFAULT_CORS_ORIGINS = [
+  'http://localhost:3000',
+  'http://127.0.0.1:3000'
+];
+const allowedOrigins = (process.env.CORS_ORIGINS || DEFAULT_CORS_ORIGINS.join(','))
+  .split(',')
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
+app.disable('x-powered-by');
+
 // ─────────────────── Cabeceras de seguridad (CSP y afines) ───────────────────
 app.use((req, res, next) => {
   res.setHeader(
@@ -26,14 +37,13 @@ app.use((req, res, next) => {
 // Middleware para parsear JSON
 app.use(express.json());
 
-// CORS restringido a los orígenes conocidos del frontend, en lugar del comodín
-// '*' (que ZAP reporta como "Wildcard Directive" y permite que cualquier sitio
-// consuma la API). CORS_ORIGIN puede sobrescribirse por entorno.
-const allowedOrigins = (process.env.CORS_ORIGIN ||
-  'http://localhost:3000,http://127.0.0.1:3000').split(',').map(o => o.trim());
+// CORS restringido a los orígenes configurados del frontend. Las solicitudes
+// sin Origin siguen disponibles para health checks y clientes servidor a servidor.
 app.use(cors({
-  origin: allowedOrigins,
-  methods: ['GET', 'POST'],
+  origin(origin, callback) {
+    callback(null, !origin || allowedOrigins.includes(origin));
+  },
+  methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type']
 }));
 
@@ -521,18 +531,22 @@ app.post('/pago', async (req, res) => {
 });
 
 
-const server = app.listen(PORT, HOST, () => {
+if (require.main === module) {
+  const server = app.listen(PORT, HOST, () => {
     console.log(`Server listening at http://${HOST}:${PORT}`)
-  })
+  });
 
-server.on('error', (err) => {
-  if (err.code === 'EADDRINUSE') {
-    console.error(`
+  server.on('error', (err) => {
+    if (err.code === 'EADDRINUSE') {
+      console.error(`
 [x] El puerto ${PORT} ya esta en uso.`)
-    console.error(`    Cerra el proceso que lo ocupa (o corre: docker compose down),`)
-    console.error(`    o usa otro puerto:  PORT=3003 node main.js
+      console.error(`    Cerra el proceso que lo ocupa (o corre: docker compose down),`)
+      console.error(`    o usa otro puerto:  PORT=3003 node main.js
 `)
-    process.exit(1)
-  }
-  throw err
-})
+      process.exit(1)
+    }
+    throw err
+  });
+}
+
+module.exports = app;

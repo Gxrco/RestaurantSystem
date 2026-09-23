@@ -9,9 +9,33 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 
+// ─────────────────── Cabeceras de seguridad (CSP y afines) ───────────────────
+app.use((req, res, next) => {
+  res.setHeader(
+    'Content-Security-Policy',
+    "default-src 'none'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'"
+  );
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('Referrer-Policy', 'no-referrer');
+  res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+  res.setHeader('Permissions-Policy', 'geolocation=(), microphone=(), camera=()');
+  next();
+});
+
 // Middleware para parsear JSON
 app.use(express.json());
-app.use(cors());
+
+// CORS restringido a los orígenes conocidos del frontend, en lugar del comodín
+// '*' (que ZAP reporta como "Wildcard Directive" y permite que cualquier sitio
+// consuma la API). CORS_ORIGIN puede sobrescribirse por entorno.
+const allowedOrigins = (process.env.CORS_ORIGIN ||
+  'http://localhost:3000,http://127.0.0.1:3000').split(',').map(o => o.trim());
+app.use(cors({
+  origin: allowedOrigins,
+  methods: ['GET', 'POST'],
+  allowedHeaders: ['Content-Type']
+}));
 
 const PORT = process.env.PORT || 3002;
 const HOST = process.env.HOST || '0.0.0.0';
@@ -497,6 +521,18 @@ app.post('/pago', async (req, res) => {
 });
 
 
-app.listen(PORT, HOST, () => {
+const server = app.listen(PORT, HOST, () => {
     console.log(`Server listening at http://${HOST}:${PORT}`)
   })
+
+server.on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    console.error(`
+[x] El puerto ${PORT} ya esta en uso.`)
+    console.error(`    Cerra el proceso que lo ocupa (o corre: docker compose down),`)
+    console.error(`    o usa otro puerto:  PORT=3003 node main.js
+`)
+    process.exit(1)
+  }
+  throw err
+})
